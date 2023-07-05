@@ -2,6 +2,7 @@ package com.talk2doc.controller;
 
 import com.talk2doc.exception.PatientException;
 import com.talk2doc.model.PatientDetails;
+import com.talk2doc.model.PatientQuery;
 import com.talk2doc.model.UserLogin;
 import com.talk2doc.service.PatientDetailsService;
 import com.talk2doc.service.UserLoginService;
@@ -20,7 +21,6 @@ public class PatientController {
 
     private final PatientDetailsService patientDetailsService;
     private final UserLoginService loginService;
-
 
     public PatientController(@Autowired PatientDetailsService patientDetailsService,
                              @Autowired UserLoginService loginService) {
@@ -53,6 +53,37 @@ public class PatientController {
             return new ResponseEntity<>("Patient not found for mobile no : " + mobileNo, HttpStatus.NOT_FOUND);
         return new ResponseEntity<>(patientDetails, HttpStatus.OK);
 
+    }
+
+    @PostMapping("/patient/query")
+    public ResponseEntity<String> savePatientQuery(@RequestBody PatientQuery patientQuery) throws PatientException {
+        patientQuery = patientDetailsService.savePatientQuery(patientQuery);
+        System.out.println("Query details added Successfully for patient " + patientQuery.getPatientName());
+        return new ResponseEntity<>("Query details added Successfully for patient " + patientQuery.getPatientName(), HttpStatus.OK);
+    }
+
+    @GetMapping("/patients/queries")
+    public List<PatientQuery> getAllQueries() throws PatientException {
+        List<PatientQuery> allQueries = patientDetailsService.getAllQueries();
+        return allQueries;
+    }
+
+    @GetMapping("/patients/queries/{mobileNo}")
+    public List<PatientQuery> getAllQueriesByPatient(@PathVariable String mobileNo) throws PatientException {
+        List<PatientQuery> patientQueries = patientDetailsService.getAllQueriesByPatient(mobileNo);
+        return patientQueries;
+    }
+
+    @GetMapping("/patient/query/{id}")
+    public ResponseEntity<PatientQuery> getPatientQueryById(@PathVariable Long id) throws PatientException {
+        PatientQuery patientQuery = patientDetailsService.getPatientQueryById(id);
+        return ResponseEntity.ok(patientQuery);
+    }
+
+    @PutMapping("/patient/query/{id}")
+    public ResponseEntity<PatientQuery> updatePatientQueryById(@PathVariable Long id, @RequestBody PatientQuery patientQuery) throws PatientException {
+        patientQuery = patientDetailsService.updatePatientQueryById(id, patientQuery);
+        return ResponseEntity.ok(patientQuery);
     }
 
 }
