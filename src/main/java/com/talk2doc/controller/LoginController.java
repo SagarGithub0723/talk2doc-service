@@ -23,7 +23,7 @@ public class LoginController {
         UserLogin loginResp = userLoginService.validateUserLogin(login);
         if(loginResp == null)
             return new ResponseEntity<>("Invalid credential for mobile no : " + login.getMobileNo(), HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(loginResp.getUserName(), HttpStatus.OK);
+        return new ResponseEntity<>(loginResp, HttpStatus.OK);
 
     }
 }
